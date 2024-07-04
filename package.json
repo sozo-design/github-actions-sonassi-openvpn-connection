@@ -4,7 +4,9 @@
   "description": "GitHub Action for connecting to Sonassi OpenVPN server",
   "main": "src/index.js",
   "scripts": {
-    "build": "ncc build src/index.js -o dist",
+    "build": "npm run build:main && npm run build:post",
+    "build:main": "ncc build src/index.js -o dist_main",
+    "build:post": "ncc build src/post.js -o dist_post",
     "format": "prettier --write \"src/**/*.js\"",
     "lint": "eslint --fix \"src/**/*.js\"",
     "prepare": "husky"

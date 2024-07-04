@@ -16,5 +16,5 @@ inputs:
     default: "certificate.p12"
 runs:
   using: "node20"
-  main: "dist/index.js"
-  post: "dist/index.js"
+  main: "dist_main/index.js"
+  post: "dist_post/index.js"

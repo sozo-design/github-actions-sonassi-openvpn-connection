@@ -2,5 +2,5 @@
 . "$(dirname "$0")/_/husky.sh"
 
 npm install
-nom run build
-git add dist/index.js
+npm run build
+git add dist_main/index.js dist_post/index.js
