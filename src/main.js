@@ -1,6 +1,6 @@
 const fs = require("fs");
 const core = require("@actions/core");
-const exec = require(".exec");
+const exec = require("./exec");
 const Tail = require("tail").Tail;
 
 /*global clearTimeout, setTimeout*/
@@ -8,9 +8,10 @@ const Tail = require("tail").Tail;
 
 const run = (callback) => {
   const configFile = core.getInput("config_file", { required: true });
-  const configFileName = '/tmp/config.ovpn'
+  const configFileName = "config.ovpn";
   const certificate = core.getInput("certificate", { required: true });
   const certificateName = core.getInput("certificate_name", { required: true });
+  const openVpnLog = "openvpn.log";
 
   // If the certificate is base64 encoded, decode it and write it to a temporary file
   exec(`echo "${configFile}" > ${configFileName}`);
@@ -20,20 +21,20 @@ const run = (callback) => {
   }
 
   // If the certificate is base64 encoded, decode it and write it to a temporary file
-  exec(`echo "${certificate}" | base64 -d > /tmp/${certificateName}`);
+  exec(`echo "${certificate}" | base64 -d > ${certificateName}`);
 
-  if (!fs.existsSync(`/tmp/${certificateName}`)) {
-    throw new Error(`Config file not found: /tmp/${certificateName}`);
+  if (!fs.existsSync(`${certificateName}`)) {
+    throw new Error(`Config file not found: ${certificateName}`);
   }
 
   fs.appendFileSync(configFile, "\n# -- GHA Modified --\n");
 
-  fs.writeFileSync("/tmp/openvpn.log", "");
-  const tail = new Tail("/tmp/openvpn.log");
+  fs.writeFileSync(openVpnLog, "");
+  const tail = new Tail(openVpnLog);
 
   try {
     exec(
-      `sudo openvpn --config ${configFileName} --pkcs12 /tmp/${certificateName} --daemon --log /tmp/openvpn.log --writepid openvpn.pid`,
+      `sudo openvpn --config ${configFileName} --pkcs12 ${certificateName} --daemon --log ${openVpnLog} --writepid openvpn.pid`,
     );
   } catch (error) {
     core.error(`Error starting OpenVPN: ${error.message}`);
@@ -41,20 +42,22 @@ const run = (callback) => {
   }
 
   tail.on("line", (line) => {
-    core.info(line);
-    if (line.includes("Initialization Sequence Completed")) {
-      core.info("OpenVPN started successfully");
+    core.debug(line);
+    if (line.includes("Peer Connection Initiated with")) {
       tail.unwatch();
       clearTimeout(timer);
       const pid = fs.readFileSync("openvpn.pid", "utf8").trim();
       core.info(`OpenVPN connected successfully with PID ${pid}`);
+      core.info(`Sleeping for 5 seconds to allow connection to stabilize`);
+      exec(`sleep 5`);
       callback(pid);
     }
   });
 
   const timer = setTimeout(() => {
-    core.setFailed("OpenVPN failed to start within 30 seconds");
-  }, 30000);
+    core.setFailed("OpenVPN failed to start within 15 seconds");
+    tail.unwatch();
+  }, 15000);
 };
 
 module.exports = run;
