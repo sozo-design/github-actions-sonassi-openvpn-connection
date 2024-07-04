@@ -1,0 +1,42 @@
+{
+  "name": "actions-sonassi-openvpn-connection",
+  "version": "1.0.0",
+  "description": "GitHub Action for connecting to Sonassi OpenVPN server",
+  "main": "src/index.js",
+  "scripts": {
+    "build": "ncc build src/index.js -o dist",
+    "format": "prettier --write \"src/**/*.js\"",
+    "lint": "eslint --fix \"src/**/*.js\"",
+    "prepare": "husky"
+  },
+  "keywords": [
+    "github",
+    "actions"
+  ],
+  "author": "Clive Walkden <clivewalkden@gmail.com>",
+  "homepage": "https://github.com/sozo-design/github-actions-sonassi-openvpn-connection",
+  "bugs": {
+    "url": "https://github.com/sozo-design/github-actions-sonassi-openvpn-connection/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/sozo-design/github-actions-sonassi-openvpn-connection"
+  },
+  "license": "MIT",
+  "dependencies": {
+    "@actions/core": "^1.10.1",
+    "@actions/github": "^6.0.0",
+    "shelljs.exec": "^1.1.8",
+    "tail": "^2.2.6"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.6.0",
+    "@vercel/ncc": "^0.38.1",
+    "eslint": "^9.6.0",
+    "eslint-config-prettier": "^9.1.0",
+    "globals": "^15.8.0",
+    "husky": "^9.0.11",
+    "prettier": "^3.3.2",
+    "semantic-release": "^24.0.0"
+  }
+}

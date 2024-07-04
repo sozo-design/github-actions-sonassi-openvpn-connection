@@ -1,0 +1,30 @@
+name: Test
+
+on:
+    push:
+        branches:
+            - main
+    pull_request:
+
+jobs:
+    test:
+        runs-on: ubuntu-latest
+        name: Test usage of OpenVPN
+        steps:
+            - name: Checkout
+              uses: actions/checkout@v4
+
+            - name: Install OpenVPN
+              run: |
+                  sudo apt-get update
+                  sudo apt-get install -y openvpn openvpn-systemd-resolved
+        
+            - name: Test OpenVPN
+              uses: "./"
+              with:
+                  config_file: ${{ secrets.VPN_CONFIG_FILE }}
+                  certificate: ${{ secrets.VPN_CERTIFICATE }}
+                  certificate_name: ${{ secrets.VPN_CERTIFICATE_NAME }}
+
+            - name: Check if connected
+              run: curl -v http://172.16.0.61

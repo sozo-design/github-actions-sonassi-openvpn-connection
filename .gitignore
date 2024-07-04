@@ -1,0 +1,17 @@
+# GitHub action code
+!dist/
+
+# Optional npm cache directory
+.npm
+
+# Optional eslint cache
+.eslintcache
+
+# Dependency directories
+node_modules/
+
+### Node ###
+# Logs
+logs
+*.log
+npm-debug.log*

@@ -1,0 +1,20 @@
+name: "Sonassi OpenVPN Connect"
+description: "Connect to Sonassi OpenVPN"
+branding:
+  color: "blue"
+  icon: "lock"
+inputs:
+  config_file:
+    description: "The OpenVPN configuration file"
+    required: true
+  certificate:
+    description: "The OpenVPN certificate"
+    required: true
+  certificate_name:
+    description: "The OpenVPN certificate name as declared in the configuration file"
+    required: true
+    default: "certificate.p12"
+runs:
+  using: "node20"
+  main: "dist/index.js"
+  post: "dist/index.js"
