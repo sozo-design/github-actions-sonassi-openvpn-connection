@@ -9,7 +9,7 @@ on:
 
 jobs:
     test:
-        runs-on: ubuntu-latest
+        runs-on: ubuntu-22.04
         name: Test usage of OpenVPN
         steps:
             - name: Checkout
@@ -18,7 +18,7 @@ jobs:
             - name: Install OpenVPN
               run: |
                   sudo apt-get update
-                  sudo apt-get install -y openvpn=2.5.9 openvpn-systemd-resolved
+                  sudo apt-get install -y openvpn=2.5.9-0ubuntu0.22.04.3 openvpn-systemd-resolved
         
             - name: Test OpenVPN
               uses: "./"
