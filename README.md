@@ -19,6 +19,17 @@ To use this action, you need to provide the necessary configuration details for 
         config: ${{ secrets.VPN_SERVER_CONFIG }}
         certificate: ${{ secrets.VPN_CERTIFICATE }}
         certificate_name: ${{ secrets.VPN_CERTIFICATE_NAME }}
+
+- name: Wait for VPN to connect
+    if: success()
+    run: until ping -c 1 -W 5 172.16.0.61; do sleep 2; done
+
+- name: Upload VPN logs
+    if: always()
+    uses: actions/upload-artifact@v2
+    with:
+        name: vpn-logs
+        path: openvpn.log
 ```
 
 Make sure to store your sensitive information (such as the config, certificate, and certificate_name) as secrets in your GitHub repository to keep them secure. 
@@ -35,5 +46,7 @@ certutil -encode <file_name> output.txt
 Replace `<file_name>` with the name of the file you want to encode. The encoded output will be saved in `output.txt`.
 
 Remember to replace `<file_name>` with the actual name of the file you want to encode.
+
+The optional `Upload VPN logs` step allows you to see logs from the OpenVPN process and debug where needed.
 
 For more information on how to use this action, please refer to the [GitHub Action documentation](https://docs.github.com/actions).
