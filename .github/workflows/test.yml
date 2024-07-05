@@ -27,5 +27,13 @@ jobs:
                   certificate: ${{ secrets.VPN_CERTIFICATE }}
                   certificate_name: ${{ secrets.VPN_CERTIFICATE_NAME }}
 
-            - name: Check if connected
-              run: ping -c 1 -W 5 172.16.0.61 >/dev/null && echo 'Successfully pinged device!'
+            - name: Wait for VPN to connect
+              if: success()
+              run: until ping -c 1 -W 5 172.16.0.61; sleep 2; done
+
+            - name: Upload VPN logs
+              if: always()
+              uses: actions/upload-artifact@v2
+              with:
+                  name: vpn-logs
+                  path: openvpn.log
