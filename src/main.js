@@ -12,9 +12,10 @@ const run = (callback) => {
   const configFileName = "config.ovpn";
   const certificate = core.getInput("certificate", { required: true });
   const certificateName = core.getInput("certificate_name", { required: true });
-  const configFilePath = `${tmpDir}/${configFileName}`;
-  const certificatePath = `${tmpDir}/${certificateName}`;
   const openVpnLog = "openvpn.log";
+  const configFilePath = `${tmpDir}/${configFileName}`;
+  const certificateFilePath = `${tmpDir}/${certificateName}`;
+  const logFilePath = `${tmpDir}/${openVpnLog}`;
 
   // If the certificate is base64 encoded, decode it and write it to a temporary file
   exec(`echo "${configFile}" > ${configFilePath}`);
@@ -24,10 +25,10 @@ const run = (callback) => {
   }
 
   // If the certificate is base64 encoded, decode it and write it to a temporary file
-  exec(`echo "${certificate}" | base64 -d > ${certificatePath}`);
+  exec(`echo "${certificate}" | base64 -d > ${certificateFilePath}`);
 
-  if (!fs.existsSync(`${certificatePath}`)) {
-    throw new Error(`Config file not found: ${certificatePath}`);
+  if (!fs.existsSync(`${certificateFilePath}`)) {
+    throw new Error(`Config file not found: ${certificateFilePath}`);
   }
 
   fs.appendFileSync(configFile, "\n# -- GHA Modified --\n");
@@ -37,7 +38,7 @@ const run = (callback) => {
 
   try {
     exec(
-      `sudo openvpn --config ${configFilePath} --pkcs12 ${certificatePath} --daemon --log ${openVpnLog} --writepid openvpn.pid`,
+      `sudo openvpn --config ${configFilePath} --pkcs12 ${certificateFilePath} --daemon --log ${logFilePath} --writepid openvpn.pid`,
     );
   } catch (error) {
     core.error(`Error starting OpenVPN: ${error.message}`);
