@@ -16,7 +16,7 @@ inputs:
     default: "certificate.p12"
   tmp_dir:
     description: "The temporary directory to store the OpenVPN configuration and certificate"
-    required: true
+    required: false
     default: "/tmp"
 runs:
   using: "node20"
