@@ -31,7 +31,7 @@ To use this action, you need to provide the necessary configuration details for 
     uses: actions/upload-artifact@v4
     with:
         name: vpn-logs
-        path: /tmp/openvpn.log
+        path: openvpn.log
 ```
 
 Make sure to store your sensitive information (such as the config, certificate, and certificate_name) as secrets in your GitHub repository to keep them secure. 
