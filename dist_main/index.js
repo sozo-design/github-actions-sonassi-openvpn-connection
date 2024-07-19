@@ -25429,10 +25429,10 @@ const run = (callback) => {
     throw new Error(`Config file not found: ${certificateFilePath}`);
   }
 
-  fs.appendFileSync(configFile, "\n# -- GHA Modified --\n");
+  fs.appendFileSync(configFilePath, "\n# -- GHA Modified --\n");
 
-  fs.writeFileSync(openVpnLog, "");
-  const tail = new Tail(openVpnLog);
+  fs.writeFileSync(logFilePath, "");
+  const tail = new Tail(logFilePath);
 
   try {
     exec(
