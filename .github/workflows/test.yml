@@ -26,6 +26,7 @@ jobs:
                   config_file: ${{ secrets.VPN_CONFIG }}
                   certificate: ${{ secrets.VPN_CERTIFICATE }}
                   certificate_name: ${{ secrets.VPN_CERTIFICATE_NAME }}
+                  tmp_dir: "/tmp"
 
             - name: Wait for VPN to connect
               if: success()

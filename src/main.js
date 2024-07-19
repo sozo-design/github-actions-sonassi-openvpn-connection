@@ -7,24 +7,27 @@ const Tail = require("tail").Tail;
 /*eslint no-undef: "error"*/
 
 const run = (callback) => {
+  const tmpDir = core.getInput("tmp_dir", { required: true });
   const configFile = core.getInput("config_file", { required: true });
   const configFileName = "config.ovpn";
   const certificate = core.getInput("certificate", { required: true });
   const certificateName = core.getInput("certificate_name", { required: true });
+  const configFilePath = `${tmpDir}/${configFileName}`;
+  const certificatePath = `${tmpDir}/${certificateName}`;
   const openVpnLog = "openvpn.log";
 
   // If the certificate is base64 encoded, decode it and write it to a temporary file
-  exec(`echo "${configFile}" > ${configFileName}`);
+  exec(`echo "${configFile}" > ${configFilePath}`);
 
-  if (!fs.existsSync(configFileName)) {
-    throw new Error(`Config file not found: ${configFileName}`);
+  if (!fs.existsSync(configFilePath)) {
+    throw new Error(`Config file not found: ${configFilePath}`);
   }
 
   // If the certificate is base64 encoded, decode it and write it to a temporary file
-  exec(`echo "${certificate}" | base64 -d > ${certificateName}`);
+  exec(`echo "${certificate}" | base64 -d > ${certificatePath}`);
 
-  if (!fs.existsSync(`${certificateName}`)) {
-    throw new Error(`Config file not found: ${certificateName}`);
+  if (!fs.existsSync(`${certificatePath}`)) {
+    throw new Error(`Config file not found: ${certificatePath}`);
   }
 
   fs.appendFileSync(configFile, "\n# -- GHA Modified --\n");
@@ -34,7 +37,7 @@ const run = (callback) => {
 
   try {
     exec(
-      `sudo openvpn --config ${configFileName} --pkcs12 ${certificateName} --daemon --log ${openVpnLog} --writepid openvpn.pid`,
+      `sudo openvpn --config ${configFilePath} --pkcs12 ${certificatePath} --daemon --log ${openVpnLog} --writepid openvpn.pid`,
     );
   } catch (error) {
     core.error(`Error starting OpenVPN: ${error.message}`);
