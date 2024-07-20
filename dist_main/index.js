@@ -25416,25 +25416,37 @@ const run = (callback) => {
   const logFilePath = `${openVpnLog}`;
 
   // If the certificate is base64 encoded, decode it and write it to a temporary file
+  core.debug(`Writing config file to ${configFilePath}`);
   exec(`echo "${configFile}" > ${configFilePath}`);
 
+  core.debug(`Checking if config file exists: ${configFilePath}`);
   if (!fs.existsSync(configFilePath)) {
     throw new Error(`Config file not found: ${configFilePath}`);
   }
 
   // If the certificate is base64 encoded, decode it and write it to a temporary file
+  core.debug(`Writing certificate file to ${certificateFilePath}`);
   exec(`echo "${certificate}" | base64 -d > ${certificateFilePath}`);
 
+  core.debug(`Checking if certificate file exists: ${certificateFilePath}`);
   if (!fs.existsSync(`${certificateFilePath}`)) {
     throw new Error(`Config file not found: ${certificateFilePath}`);
   }
 
-  fs.appendFileSync(configFile, "\n# -- GHA Modified --\n");
+  core.debug(`Appending to config file: ${configFilePath}`);
+  fs.appendFileSync(configFilePath, "\n# -- GHA Modified --\n");
 
-  fs.writeFileSync(openVpnLog, "");
-  const tail = new Tail(openVpnLog);
+  core.debug(`Checking if log file exists: ${logFilePath}`);
+  if (!fs.existsSync(`${logFilePath}`)) {
+    core.debug(`Creating log file: ${logFilePath}`);
+    fs.writeFileSync(logFilePath, "");
+  }
+
+  core.debug(`Watching log file: ${logFilePath}`);
+  const tail = new Tail(logFilePath);
 
   try {
+    core.debug(`Starting OpenVPN with config: ${configFilePath}`);
     exec(
       `sudo openvpn --config ${configFilePath} --pkcs12 ${certificateFilePath} --daemon --log ${logFilePath} --writepid openvpn.pid`,
     );
