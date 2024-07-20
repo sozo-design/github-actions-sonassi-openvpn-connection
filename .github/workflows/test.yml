@@ -7,6 +7,9 @@ on:
             - develop
     pull_request:
 
+env:
+  TMP_DIR: "/tmp"
+
 jobs:
     test:
         runs-on: ubuntu-22.04
@@ -26,7 +29,7 @@ jobs:
                   config_file: ${{ secrets.VPN_CONFIG }}
                   certificate: ${{ secrets.VPN_CERTIFICATE }}
                   certificate_name: ${{ secrets.VPN_CERTIFICATE_NAME }}
-                  tmp_dir: "/tmp"
+                  tmp_dir: ${{ env.TMP_DIR }}
 
             - name: Wait for VPN to connect
               if: success()
@@ -37,4 +40,4 @@ jobs:
               uses: actions/upload-artifact@v4
               with:
                   name: vpn-logs
-                  path: openvpn.log
+                  path: ${{ env.TMP_DIR }}/openvpn.log
