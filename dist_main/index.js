@@ -25413,7 +25413,7 @@ const run = (callback) => {
   const openVpnLog = "openvpn.log";
   const configFilePath = `${tmpDir}/${configFileName}`;
   const certificateFilePath = `${tmpDir}/${certificateName}`;
-  const logFilePath = `${tmpDir}/${openVpnLog}`;
+  const logFilePath = `${openVpnLog}`;
 
   // If the certificate is base64 encoded, decode it and write it to a temporary file
   core.debug(`Writing config file to ${configFilePath}`);
