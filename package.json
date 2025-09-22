@@ -32,14 +32,14 @@
     "tail": "^2.2.6"
   },
   "devDependencies": {
-    "@eslint/js": "^9.35.0",
+    "@eslint/js": "^9.36.0",
     "@semantic-release/github": "^11.0.6",
-    "@vercel/ncc": "^0.38.3",
-    "eslint": "^9.35.0",
+    "@vercel/ncc": "^0.38.4",
+    "eslint": "^9.36.0",
     "eslint-config-prettier": "^10.1.8",
     "globals": "^16.4.0",
     "husky": "^9.1.7",
     "prettier": "^3.6.2",
-    "semantic-release": "^24.2.8"
+    "semantic-release": "^24.2.9"
   }
 }
