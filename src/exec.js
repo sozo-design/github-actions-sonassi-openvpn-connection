@@ -1,5 +1,5 @@
-const shelljsExec = require("shelljs.exec");
-const core = require("@actions/core");
+import shelljsExec from "shelljs.exec";
+import * as core from "@actions/core";
 
 const exec = (command) => {
   core.info(`Executing ${command}`);
@@ -14,4 +14,4 @@ const exec = (command) => {
   core.info(result.stdout);
 };
 
-module.exports = exec;
+export default exec;

@@ -1,5 +1,5 @@
-const core = require("@actions/core");
-const exec = require("./exec");
+import * as core from "@actions/core";
+import exec from "./exec.js";
 
 const pid = core.getState("pid");
 

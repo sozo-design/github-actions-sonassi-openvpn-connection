@@ -2,6 +2,7 @@
   "name": "actions-sonassi-openvpn-connection",
   "version": "1.0.0",
   "description": "GitHub Action for connecting to Sonassi OpenVPN server",
+  "type": "module",
   "main": "src/index.js",
   "scripts": {
     "build": "npm run build:main && npm run build:post",

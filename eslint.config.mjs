@@ -5,7 +5,7 @@ import eslintConfigPrettier from "eslint-config-prettier";
 export default [
   {
     languageOptions: { 
-      sourceType: 'commonjs',
+      sourceType: 'module',
       ecmaVersion: 2021
     }
   },

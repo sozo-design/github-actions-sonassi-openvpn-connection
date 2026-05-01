@@ -1,7 +1,9 @@
-const fs = require("fs");
-const core = require("@actions/core");
-const exec = require("./exec");
-const Tail = require("tail").Tail;
+import fs from "fs";
+import * as core from "@actions/core";
+import exec from "./exec.js";
+import tail from "tail";
+
+const { Tail } = tail;
 
 /*global clearTimeout, setTimeout*/
 /*eslint no-undef: "error"*/
@@ -45,7 +47,7 @@ const run = (callback) => {
   }
 
   core.debug(`Watching log file: ${logFilePath}`);
-  const tail = new Tail(logFilePath);
+  const tailInstance = new Tail(logFilePath);
 
   try {
     core.debug(`Starting OpenVPN with config: ${configFilePath}`);
@@ -57,10 +59,10 @@ const run = (callback) => {
     throw error;
   }
 
-  tail.on("line", (line) => {
+  tailInstance.on("line", (line) => {
     core.debug(line);
     if (line.includes("Peer Connection Initiated with")) {
-      tail.unwatch();
+      tailInstance.unwatch();
       clearTimeout(timer);
       const pid = fs.readFileSync("openvpn.pid", "utf8").trim();
       core.info(`OpenVPN connected successfully with PID ${pid}`);
@@ -72,8 +74,8 @@ const run = (callback) => {
 
   const timer = setTimeout(() => {
     core.setFailed("OpenVPN failed to start within 15 seconds");
-    tail.unwatch();
+    tailInstance.unwatch();
   }, 15000);
 };
 
-module.exports = run;
+export default run;
