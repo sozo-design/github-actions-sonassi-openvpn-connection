@@ -2,4 +2,4 @@ npm install
 npm run lint
 npm run format
 npm run build
-git add dist_main/index.js dist_post/index.js
+git add dist_main/index.js dist_post/index.js package-lock.json
