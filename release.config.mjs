@@ -26,6 +26,12 @@ export default {
             }
         ],
         [
+            "@semantic-release/changelog",
+            {
+                "changelogFile": "CHANGELOG.md"
+            }
+        ],
+        [
             "@semantic-release/git",
             {
                 "assets": [
@@ -35,5 +41,6 @@ export default {
                 "message": "chore(release): ${nextRelease.version}\n\n${nextRelease.notes}"
             }
         ],
+        "@semantic-release/github"
     ]
 };
