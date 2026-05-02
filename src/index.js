@@ -1,5 +1,5 @@
-const core = require("@actions/core");
-const main = require("./main");
+import * as core from "@actions/core";
+import main from "./main.js";
 
 try {
   main((pid) => {

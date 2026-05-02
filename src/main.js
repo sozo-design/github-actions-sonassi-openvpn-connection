@@ -1,7 +1,9 @@
-const fs = require("fs");
-const core = require("@actions/core");
-const exec = require("./exec");
-const Tail = require("tail").Tail;
+import fs from "fs";
+import * as core from "@actions/core";
+import exec from "./exec.js";
+import tail from "tail";
+
+const { Tail } = tail;
 
 /*global clearTimeout, setTimeout*/
 /*eslint no-undef: "error"*/
@@ -18,25 +20,37 @@ const run = (callback) => {
   const logFilePath = `${openVpnLog}`;
 
   // If the certificate is base64 encoded, decode it and write it to a temporary file
+  core.debug(`Writing config file to ${configFilePath}`);
   exec(`echo "${configFile}" > ${configFilePath}`);
 
+  core.debug(`Checking if config file exists: ${configFilePath}`);
   if (!fs.existsSync(configFilePath)) {
     throw new Error(`Config file not found: ${configFilePath}`);
   }
 
   // If the certificate is base64 encoded, decode it and write it to a temporary file
+  core.debug(`Writing certificate file to ${certificateFilePath}`);
   exec(`echo "${certificate}" | base64 -d > ${certificateFilePath}`);
 
+  core.debug(`Checking if certificate file exists: ${certificateFilePath}`);
   if (!fs.existsSync(`${certificateFilePath}`)) {
     throw new Error(`Config file not found: ${certificateFilePath}`);
   }
 
-  fs.appendFileSync(configFile, "\n# -- GHA Modified --\n");
+  core.debug(`Appending to config file: ${configFilePath}`);
+  fs.appendFileSync(configFilePath, "\n# -- GHA Modified --\n");
 
-  fs.writeFileSync(openVpnLog, "");
-  const tail = new Tail(openVpnLog);
+  core.debug(`Checking if log file exists: ${logFilePath}`);
+  if (!fs.existsSync(`${logFilePath}`)) {
+    core.debug(`Creating log file: ${logFilePath}`);
+    fs.writeFileSync(logFilePath, "");
+  }
+
+  core.debug(`Watching log file: ${logFilePath}`);
+  const tailInstance = new Tail(logFilePath);
 
   try {
+    core.debug(`Starting OpenVPN with config: ${configFilePath}`);
     exec(
       `sudo openvpn --config ${configFilePath} --pkcs12 ${certificateFilePath} --daemon --log ${logFilePath} --writepid openvpn.pid`,
     );
@@ -45,10 +59,10 @@ const run = (callback) => {
     throw error;
   }
 
-  tail.on("line", (line) => {
+  tailInstance.on("line", (line) => {
     core.debug(line);
     if (line.includes("Peer Connection Initiated with")) {
-      tail.unwatch();
+      tailInstance.unwatch();
       clearTimeout(timer);
       const pid = fs.readFileSync("openvpn.pid", "utf8").trim();
       core.info(`OpenVPN connected successfully with PID ${pid}`);
@@ -60,8 +74,8 @@ const run = (callback) => {
 
   const timer = setTimeout(() => {
     core.setFailed("OpenVPN failed to start within 15 seconds");
-    tail.unwatch();
+    tailInstance.unwatch();
   }, 15000);
 };
 
-module.exports = run;
+export default run;

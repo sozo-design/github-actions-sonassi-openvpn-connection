@@ -19,6 +19,6 @@ inputs:
     required: false
     default: "/tmp"
 runs:
-  using: "node20"
+  using: "node24"
   main: "dist_main/index.js"
   post: "dist_post/index.js"

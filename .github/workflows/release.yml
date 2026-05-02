@@ -1,30 +1,36 @@
-name: Release
-"on":
+name: semantic-release
+
+on:
   push:
     branches:
-        - main
-        - beta
-        - alpha
+      - main
+
 permissions:
-  contents: read # for checkout
+  contents: write
+  packages: write
+  issues: write
+  pull-requests: write
+
 jobs:
   release:
-    permissions:
-      contents: write # to be able to publish a GitHub release
-      issues: write # to be able to comment on released issues
-      pull-requests: write # to be able to comment on released pull requests
-      id-token: write # to enable use of OIDC for npm provenance
-      
-    if: "!contains(github.event.head_commit.message, '[ci skip]')"
-    name: release
+    name: Release
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - name: Checkout
+        uses: actions/checkout@v4
         with:
-          cache: npm
-          node-version: lts/*
-      - run: npm ci
-      - run: npx semantic-release
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run semantic-release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: npx semantic-release
