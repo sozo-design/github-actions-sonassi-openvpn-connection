@@ -37,7 +37,7 @@
     "@eslint/js": "^10.0.1",
     "@semantic-release/changelog": "^6.0.3",
     "@semantic-release/git": "^10.0.1",
-    "@semantic-release/github": "^12.0.6",
+    "@semantic-release/github": "^12.0.8",
     "@vercel/ncc": "^0.38.4",
     "eslint": "^10.0.1",
     "eslint-config-prettier": "^10.1.8",
